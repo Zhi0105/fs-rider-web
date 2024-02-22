@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+    "target": "es5",
     "lib": [
       "dom",
       "dom.iterable",
@@ -16,44 +17,45 @@
     "isolatedModules": true,
     "jsx": "preserve",
     "incremental": true,
-    "paths": {
-      "@/*": [
-        "./src/*"
-      ],
-      "@_app/*": [
-        "./src/app/*"
-      ],
-      "@_assets/*": [
-        "./src/assets/*"
-      ],
-      "@_components/*": [
-        "./src/components/*"
-      ],
-      "@_contexts/*": [
-        "./src/contexts/*"
-      ],
-      "@_helpers/*": [
-        "./src/helpers/*"
-      ],
-      "@_services/*": [
-        "./src/services/*"
-      ],
-      "@_store/*": [
-        "./src/store/*"
-      ],
-      "@_providers/*": [
-        "./src/providers/*"
-      ],
-      "@_types/*": [
-        "./src/types/*"
-      ]
-    },
-    "forceConsistentCasingInFileNames": true,
     "plugins": [
       {
         "name": "next"
       }
-    ]
+    ],
+    "baseUrl": "src/",
+    "paths": {
+      "@/*": [
+        "src/*"
+      ],
+      "@_app/*": [
+        "app/*"
+      ],
+      "@_assets/*": [
+        "assets/*"
+      ],
+      "@_components/*": [
+        "components/*"
+      ],
+      "@_contexts/*": [
+        "contexts/*"
+      ],
+      "@_helpers/*": [
+        "helpers/*"
+      ],
+      "@_services/*": [
+        "services/*"
+      ],
+      "@_store/*": [
+        "store/*"
+      ],
+      "@_providers/*": [
+        "providers/*"
+      ],
+      "@_types/*": [
+        "types/*"
+      ]
+    },
+    "forceConsistentCasingInFileNames": true
   },
   "include": [
     "next-env.d.ts",
