@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+    "target": "es5",
     "lib": [
       "dom",
       "dom.iterable",
@@ -16,9 +17,42 @@
     "isolatedModules": true,
     "jsx": "preserve",
     "incremental": true,
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ],
+    "baseUrl": "src/",
     "paths": {
       "@/*": [
-        "./src/*"
+        "src/*"
+      ],
+      "@_app/*": [
+        "app/*"
+      ],
+      "@_assets/*": [
+        "assets/*"
+      ],
+      "@_components/*": [
+        "components/*"
+      ],
+      "@_contexts/*": [
+        "contexts/*"
+      ],
+      "@_helpers/*": [
+        "helpers/*"
+      ],
+      "@_services/*": [
+        "services/*"
+      ],
+      "@_store/*": [
+        "store/*"
+      ],
+      "@_providers/*": [
+        "providers/*"
+      ],
+      "@_types/*": [
+        "types/*"
       ]
     },
     "forceConsistentCasingInFileNames": true
@@ -26,7 +60,8 @@
   "include": [
     "next-env.d.ts",
     "**/*.ts",
-    "**/*.tsx"
+    "**/*.tsx",
+    ".next/types/**/*.ts"
   ],
   "exclude": [
     "node_modules"
