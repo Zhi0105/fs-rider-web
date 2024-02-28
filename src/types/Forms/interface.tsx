@@ -12,6 +12,7 @@ export interface FieldInterface {
 }
 
 export interface SelectInterface extends FieldInterface {
+  className?: string
   ariaPlaceHolder?: string,
   data: any
 }
