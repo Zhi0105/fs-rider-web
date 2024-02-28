@@ -1,5 +1,6 @@
 import { FC } from "react";
 import { SelectInterface } from "@_types/Forms/interface";
+import {FaAngleDown} from 'react-icons/fa'
 
 export const DropDown: FC<SelectInterface> = ({
   ariaPlaceHolder,
@@ -7,12 +8,13 @@ export const DropDown: FC<SelectInterface> = ({
   onChange,
   required,
   data = [],
-  disabled
+  disabled,
+  className
 }) => {
   return (
     <div className="select-container relative w-full">
       <select
-        className="h-full w-full tex-gray-300 border-2 border-black p-2 text-center rounded-lg mb-5"
+        className={className}
         value={value}
         onChange={onChange}
         autoComplete="autocomplete_off_hack_xfr4!k"
@@ -43,7 +45,9 @@ export const DropDown: FC<SelectInterface> = ({
           </option>
         )}
       </select>
-    
+      <div className='absolute -inset-y-0 right-0 flex items-center pointer-events-none px-4 mb-4'>
+        <FaAngleDown width={10} height={10} className="text-gray-400" />       
+      </div>
     </div>
   );
 };
