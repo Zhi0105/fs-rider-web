@@ -1,7 +1,7 @@
 "use client"
 import React from "react"
 
-import { Landing } from "@_components/Templates/Landing"
+import { Landing } from "@_components/Landing"
 
 export default function Home() {
   return (
