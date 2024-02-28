@@ -12,6 +12,8 @@ interface PODInterface {
 }
 
 export const Landing = () => {
+  const [selectedStatus, setSelectedStatus] = useState<number | null>(null);
+
   const {
     handleSubmit,
     control,
@@ -84,11 +86,14 @@ export const Landing = () => {
                   <DropDown
                     value={value}
                     onChange={(e) => {
-                      onChange(e.target.value)
+                      onChange(e.target.value);
+                      setSelectedStatus(parseInt(e.target.value, 10));
                     }}
                     className={`
-                      h-full w-full border-2 border-black p-2 text-center rounded-lg mb-5 outline-none appearance-none`
-                    }
+                      h-full w-full border-2 p-2 text-center rounded-lg mb-5 outline-none appearance-none
+                      ${selectedStatus === 1? "text-[#295E48] bg-[#D9F9E6] border-[#D9F9E6]": ""}
+                      ${selectedStatus === 2? "text-[#8C2822] bg-[#F9E3E2] border-[#F9E3E2]": ""}
+                    `}
                     ariaPlaceHolder="Status of Delivery"
                     required={true}
                     data={[
