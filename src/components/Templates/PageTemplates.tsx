@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { NoPage } from '../NoPage'
 import { Header } from '@_components/Header'
 import { Loader } from '@_components/Loader'
+import { Footer } from '@_components/Footer'
 
 export const PageTemplates = ({ children }: { children: React.ReactNode }) => {
   const [ screenWidth, setScreenWidth ] = useState<number | undefined>()
@@ -36,7 +37,13 @@ export const PageTemplates = ({ children }: { children: React.ReactNode }) => {
           <Header />
           {children}
         </div>
-      ): <NoPage /> }
+      ): (
+        <div>
+          <Header />
+          <NoPage />
+          <Footer />
+        </div>
+      )}
     </div>
   )
 }
