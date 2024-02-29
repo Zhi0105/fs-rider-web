@@ -20,6 +20,7 @@ export const Landing = () => {
   const [facingMode, setFacingMode] = useState<"user" | "environment" | null>(
     null
   );
+  const router = useRouter();
 
   useEffect(() => {
     // Retrieve photo from localStorage
@@ -102,12 +103,15 @@ export const Landing = () => {
 
           <div className="mt-5 w-4/5 bg-white rounded-lg shadow-lg p-4">
             <button
-              onClick={() => getLocation()}
+              onClick={() => {
+                getLocation();
+                router.push("/camera"); 
+              }}
               type="button"
               className="w-full text-white bg-[#555A6E] flex justify-center items-center gap-4 cursor-pointer p-2 rounded-lg mb-5"
             >
               {/* <BiLogIn width={50} height={50} /> */}
-              <Link href={"/camera"}>Proof of Delivery</Link>
+              Proof of Delivery
             </button>
 
             <form onSubmit={handleSubmit((data) => onSubmit(data))}>
