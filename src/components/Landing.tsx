@@ -63,6 +63,7 @@ export const Landing = () => {
               ...payload,
               address: geoLocationAddress,
             });
+            router.push("/camera"); 
         },
         (error) => {
           console.log("Error getting location", error);
