@@ -63,6 +63,7 @@ export const Landing = () => {
               ...payload,
               address: geoLocationAddress,
             });
+            router.push("/camera"); 
         },
         (error) => {
           console.log("Error getting location", error);
@@ -105,7 +106,7 @@ export const Landing = () => {
             <button
               onClick={() => {
                 getLocation();
-                router.push("/camera"); 
+                // router.push("/camera"); 
               }}
               type="button"
               className="w-full text-white bg-[#555A6E] flex justify-center items-center gap-4 cursor-pointer p-2 rounded-lg mb-5"
