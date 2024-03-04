@@ -5,6 +5,7 @@ import { persist, createJSONStorage } from 'zustand/middleware';
 interface orderStoreInterface {
   order?: any,
   setOrder: (data: any) => void;
+  resetOrder: () => void;
 }
 
 const orderStore = persist<orderStoreInterface>(
@@ -14,6 +15,8 @@ const orderStore = persist<orderStoreInterface>(
       set(() => ({
         order: data,
       })),
+      resetOrder: () => set(() => ({ order: "" })),
+
   }),
   {
     name: 'q', // name of the item in the storage (must be unique)
