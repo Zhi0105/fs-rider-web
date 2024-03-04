@@ -1,4 +1,4 @@
-import React, { ChangeEvent, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { PageTemplates } from "./Templates/PageTemplates";
 import { DropDown } from "@_components/Forms/Select";
 import { Controller, useForm } from "react-hook-form";
@@ -8,7 +8,6 @@ import { getGeoLocationCoding } from "@_api/location/geoCoding";
 import { LocationInterface } from "@_types/Location/interface";
 import { useRouter, useSearchParams  } from "next/navigation";
 import Image from "next/image";
-import Link from "next/link";
 
 interface PODInterface {
   pod_id?: number,
