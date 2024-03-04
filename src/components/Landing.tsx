@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { PageTemplates } from "./Templates/PageTemplates";
 import { DropDown } from "@_components/Forms/Select";
 import { Controller, useForm } from "react-hook-form";
@@ -7,6 +7,7 @@ import img from "@_assets/image.json";
 import { getGeoLocationCoding } from "@_api/location/geoCoding";
 import { LocationInterface } from "@_types/Location/interface";
 import { useRouter, useSearchParams  } from "next/navigation";
+import { useOrderStore } from "@_store/order";
 import Image from "next/image";
 
 interface PODInterface {
@@ -22,7 +23,10 @@ export const Landing = () => {
   );
   const router = useRouter();
   const searchParams = useSearchParams()
-  const [ params ] = useState(searchParams.get('q'))
+  const { order, setOrder } = useOrderStore((state) => ({
+    order: state.order,
+    setOrder: state.setOrder,
+  }));
 
   useEffect(() => {
     // Retrieve photo from localStorage
@@ -32,6 +36,13 @@ export const Landing = () => {
     setFacingMode(storedFacingMode === "user" ? "user" : "environment");
   }, []);
 
+
+  const orderCallback = useCallback(() => {
+    const params = searchParams.get('q')
+    params && setOrder(params)
+    return params
+  }, [])
+
   const {
     handleSubmit,
     control,
@@ -39,7 +50,7 @@ export const Landing = () => {
   } = useForm<PODInterface>({
     defaultValues: {
       pod_id: 0,
-      order: params ? params : null
+      order: order ? order : orderCallback()
     },
   });
   const [location, setLocation] = useState<LocationInterface>();
