@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { PageTemplates } from "./Templates/PageTemplates";
 import { DropDown } from "@_components/Forms/Select";
 import { Controller, useForm } from "react-hook-form";
@@ -23,6 +23,7 @@ export const Landing = () => {
   );
   const router = useRouter();
   const searchParams = useSearchParams()
+  const [ params ] = useState(searchParams.get('q'))
   const { order, setOrder } = useOrderStore((state) => ({
     order: state.order,
     setOrder: state.setOrder,
@@ -37,20 +38,16 @@ export const Landing = () => {
   }, []);
 
 
-  const orderCallback = useCallback(() => {
-    const params = searchParams.get('q')
-    params && setOrder(params)
-    return params
-  }, [])
-
   const {
     handleSubmit,
     control,
+    watch,
+    setValue,
     formState: { errors },
   } = useForm<PODInterface>({
     defaultValues: {
       pod_id: 0,
-      order: order ? order : orderCallback()
+      order: params ? params : order ? order: ""
     },
   });
   const [location, setLocation] = useState<LocationInterface>();
@@ -60,6 +57,8 @@ export const Landing = () => {
     localStorage.removeItem("capturedPhoto");
     localStorage.removeItem("facingMode");
     setPhoto(null);
+    setValue("order", "")
+    setOrder("")
   };
 
   const getLocation = () => {
@@ -77,7 +76,8 @@ export const Landing = () => {
               ...payload,
               address: geoLocationAddress,
             });
-            router.push("/camera"); 
+          setOrder(watch("order"))
+          router.push("/camera"); 
         },
         (error) => {
           console.log("Error getting location", error);
@@ -99,6 +99,7 @@ export const Landing = () => {
         <form className="form-container flex flex-col justify-center items-center" onSubmit={handleSubmit((data) => onSubmit(data))}>
           <Controller
             control={control}
+            rules={{ required: true }}
             render={({ field: { onChange, value } }) => (
               <input 
                 className="order_number w-4/5 tex-xl text-[#2E426C] font-bold text-center mt-5 shadow-lg bg-white rounded-lg p-4 outline-none"
