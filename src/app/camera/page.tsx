@@ -1,12 +1,6 @@
 "use client";
-import {
-  faCamera,
-  faCheck,
-  faClose,
-  faSync,
-} from "@fortawesome/free-solid-svg-icons";
+import { faCheck, faClose } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Landing } from "@_components/Landing";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
@@ -29,10 +23,10 @@ const PhotoDisplay: React.FC<PhotoDisplayProps> = ({
 
   const handleCheck = () => {
     // Save photo and facingMode in localStorage
-    localStorage.setItem('capturedPhoto', photo);
-    localStorage.setItem('facingMode', facingMode);
+    localStorage.setItem("capturedPhoto", photo);
+    localStorage.setItem("facingMode", facingMode);
     // Navigate to Landing page
-    router.push('/');
+    router.push("/");
   };
 
   return (
@@ -111,7 +105,7 @@ const CameraPage = () => {
 
       context.drawImage(videoRef.current, 0, 0, canvas.width, canvas.height);
 
-      const photoUrl = canvas.toDataURL("image/jpeg");
+      const photoUrl = canvas.toDataURL("image/webp");
       setCapturedPhoto(photoUrl);
     }
   };
@@ -151,14 +145,14 @@ const CameraPage = () => {
             {/* Empty placeholder for the 1st col */}
             <div></div>
             <button className="text-white" onClick={handleCapturePhoto}>
-              <PiRecordFill size={90}/>
+              <PiRecordFill size={90} />
               {/* <FontAwesomeIcon icon={faCamera} size="3x" /> */}
             </button>
             <button
               className="text-white justify-self-end"
               onClick={handleSwitchCamera}
             >
-              <MdCameraswitch size={42}/>
+              <MdCameraswitch size={42} />
             </button>
           </div>
         </>
