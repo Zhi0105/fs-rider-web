@@ -9,6 +9,7 @@ import { LocationInterface } from "@_types/Location/interface";
 import { useRouter, useSearchParams  } from "next/navigation";
 import { useOrderStore } from "@_store/order";
 import Image from "next/image";
+import { Watermark } from "./Watermark";
 
 interface PODInterface {
   pod_id?: number,
@@ -88,10 +89,6 @@ export const Landing = () => {
     }
   };
 
-  useEffect(() => {
-    location && console.log(location);
-  }, [location]);
-
 
   return (
     <PageTemplates>
@@ -117,14 +114,9 @@ export const Landing = () => {
           
           <div className="image_preview mt-5 w-4/5 rounded-lg bg-[#F3F3F3]">
             {photo ? (
-              <Image
-                src={photo}
-                alt="Captured"
-                className={`p-4 ${
-                  facingMode === "user" ? "transform scale-x-[-1]" : ""
-                } object-cover w-full h-[78%]`}
-                width={100}
-                height={100}
+              <Watermark 
+                file={photo}
+                facingMode={facingMode}
               />
             ) : (
               <Lottie animationData={img} className="p-4" />
