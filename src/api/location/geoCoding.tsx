@@ -5,7 +5,7 @@ import { LocationInterface } from "@_types/Location/interface";
 export const getGeoLocationCoding = (location: LocationInterface) => {
   const result =  axios.get(`https://maps.googleapis.com/maps/api/geocode/json?latlng=${location.latitude},${location.longitude}&key=${process.env.API_KEY}`)
   .then((response) => {
-      const address = response.data.results[0].formatted_address
+      const address = response.data.results
       if(address) return address
       if(!address) console.log("address not found")
   }).catch((error) => {
