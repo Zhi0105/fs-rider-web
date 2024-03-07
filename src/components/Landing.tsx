@@ -5,9 +5,9 @@ import { Controller, useForm } from "react-hook-form";
 import Lottie from "lottie-react";
 import img from "@_assets/image.json";
 import { getGeoLocationCoding } from "@_api/location/geoCoding";
-import { LocationInterface } from "@_types/Location/interface";
 import { useRouter, useSearchParams  } from "next/navigation";
 import { useOrderStore } from "@_store/order";
+import { useLocationStore } from "@_store/location";
 import Image from "next/image";
 import { Watermark } from "./Watermark";
 
@@ -29,6 +29,11 @@ export const Landing = () => {
     order: state.order,
     setOrder: state.setOrder,
   }));
+    const { location, setLocation } = useLocationStore((state) => ({
+      location: state.location,
+      setLocation: state.setLocation,
+  }));
+  
 
   useEffect(() => {
     // Retrieve photo from localStorage
@@ -51,7 +56,6 @@ export const Landing = () => {
       order: params ? params : order ? order: ""
     },
   });
-  const [location, setLocation] = useState<LocationInterface>();
   const onSubmit = (data: PODInterface): void => {
     console.log(data);
     // Clear local storage or total reset
@@ -72,12 +76,15 @@ export const Landing = () => {
           };
 
           const geoLocationAddress = getGeoLocationCoding(payload);
-          geoLocationAddress &&
-            setLocation({
-              ...payload,
-              address: geoLocationAddress,
-            });
-          setOrder(watch("order"))
+            geoLocationAddress.then(res => {
+             if(res) {
+              setLocation({
+                ...payload,
+                address: [ ...res ],
+              });
+              setOrder(watch("order"))
+            }
+          }).catch(err => console.log("@GLA:", err))
           router.push("/camera"); 
         },
         (error) => {
@@ -88,7 +95,6 @@ export const Landing = () => {
       console.log("Geolocation is not suported by this browser");
     }
   };
-
 
   return (
     <PageTemplates>
@@ -117,6 +123,7 @@ export const Landing = () => {
               <Watermark 
                 file={photo}
                 facingMode={facingMode}
+                location={location}
               />
             ) : (
               <Lottie animationData={img} className="p-4" />
