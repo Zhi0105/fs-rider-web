@@ -1,6 +1,8 @@
-import React, { useEffect, useRef, useCallback }  from 'react'
+import React, { useEffect, useRef, useCallback, FC }  from 'react'
+import { waterMarkInterface } from '@_types/watermark/interface';
+import { DateFormatter } from 'utils/helpers';
 
-export const Watermark = ({ file, facingMode }: { file?:any, facingMode?: string | null }) => {
+export const Watermark:FC<waterMarkInterface> = ({ file, facingMode, location }) => {
   const canvasRef = useRef(null);
 
   const base64ToFile = async(photo: string, filename: string) => {
@@ -22,7 +24,6 @@ export const Watermark = ({ file, facingMode }: { file?:any, facingMode?: string
 
 
   useEffect(() => {
-    const watermarkText = 'Hello world'
     const canvas = document.getElementById("myCanvas") as HTMLCanvasElement
     const context = canvas?.getContext('2d')
     const image = new Image()
@@ -45,11 +46,15 @@ export const Watermark = ({ file, facingMode }: { file?:any, facingMode?: string
       }
 
       // context?.drawImage(image, 0, 0)
+      
 
-      if(context) {
-        context.font = '40px Arial'
+      if(context && location) {
+        context.font = '17px Arial'
         context.fillStyle = 'rgb(255, 255, 255)'
-        context?.fillText(watermarkText, 0, canvas.height + (-20))
+        context?.fillText(`${location.address[7].formatted_address}`, 20, canvas.height + (-80))
+        context?.fillText(`${location.address[0].formatted_address}`, 20, canvas.height + (-60))
+        context?.fillText(`Lat ${location.latitude}, Long ${location.longitude}`, 20, canvas.height + (-40))
+        context?.fillText(`${DateFormatter(file.lastModifiedDate)}`, 20, canvas.height + (-20))
       }
 
       // setWatermarkSrc(canvas.toDataURL())
@@ -57,8 +62,6 @@ export const Watermark = ({ file, facingMode }: { file?:any, facingMode?: string
     }
 
   }, [file, photoCallback])
-
-  
 
 
   return (
