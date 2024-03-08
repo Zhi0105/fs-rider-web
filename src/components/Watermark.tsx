@@ -92,7 +92,7 @@ export const Watermark:FC<waterMarkInterface> = ({ file, facingMode, location })
       photoCallback(canvas.toDataURL())
     }
 
-  }, [file, photoCallback])
+  }, [file, photoCallback, facingMode, location])
 
 
   return (
