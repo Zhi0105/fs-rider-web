@@ -109,4 +109,3 @@ export const Watermark:FC<waterMarkInterface> = ({ file, facingMode, location })
     <canvas ref={canvasRef} id="myCanvas" className='w-full p-4' />
   )
 }
-const calculateTextHeight = (lines:any, lineHeight:any) => lines.length * lineHeight;
