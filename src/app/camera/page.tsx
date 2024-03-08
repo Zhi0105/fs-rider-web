@@ -58,7 +58,7 @@ const PhotoDisplay: React.FC<PhotoDisplayProps> = ({
 
 const CameraPage = () => {
   const videoRef = useRef<HTMLVideoElement>(null);
-  const [facingMode, setFacingMode] = useState<"user" | "environment">("user");
+  const [facingMode, setFacingMode] = useState<"user" | "environment">("environment");
   const [capturedPhoto, setCapturedPhoto] = useState<string | null>(null);
 
   const initCamera = useCallback(async () => {

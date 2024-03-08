@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useCallback, FC }  from 'react'
 import { waterMarkInterface } from '@_types/watermark/interface';
-import { DateFormatter } from 'utils/helpers';
+import { breakTextIntoLines, DateFormatter } from 'utils/helpers';
 
 export const Watermark:FC<waterMarkInterface> = ({ file, facingMode, location }) => {
   const canvasRef = useRef(null);
@@ -14,12 +14,11 @@ export const Watermark:FC<waterMarkInterface> = ({ file, facingMode, location })
     }
     const blob = new Blob([ab], { type: 'image/webp' })
     const newFile = new File([blob], filename, { type: 'image/webp' })
-    console.log(newFile)
+    console.log("File name: ",newFile)
   }
 
   const photoCallback =  useCallback((photo: string | null):any => {
-     
-    photo && base64ToFile(photo, 'image.webp')
+    photo && base64ToFile(photo, 'proof_of_delivery.webp')
   }, [])
 
 
@@ -47,21 +46,53 @@ export const Watermark:FC<waterMarkInterface> = ({ file, facingMode, location })
 
       // context?.drawImage(image, 0, 0)
       
+      if (context && location) {
+        const backgroundOpacity = 0.7;
+        const backgroundHeight = 150;
+        const horizontalPadding = 30;
+        const verticalPadding = 10;
+        const paddingLeft = 20;
+  
+        context.fillStyle = `rgba(42, 42, 42, ${backgroundOpacity})`;
 
-      if(context && location) {
-        context.font = '17px Arial'
-        context.fillStyle = 'rgb(255, 255, 255)'
-        context?.fillText(`${location.address[7].formatted_address}`, 20, canvas.height + (-80))
-        context?.fillText(`${location.address[0].formatted_address}`, 20, canvas.height + (-60))
-        context?.fillText(`Lat ${location.latitude}, Long ${location.longitude}`, 20, canvas.height + (-40))
-        context?.fillText(`${DateFormatter(file.lastModifiedDate)}`, 20, canvas.height + (-20))
+        context.fillRect(
+          horizontalPadding,
+          canvas.height - backgroundHeight + verticalPadding - 28,
+          canvas.width - 2 * horizontalPadding,
+          backgroundHeight - 2 * verticalPadding
+        );
+  
+        context.font = '16px Arial';
+        context.fillStyle = 'rgb(255, 255, 255)';
+  
+        const lineHeight = 20;
+        let currentY = canvas.height - backgroundHeight + verticalPadding; 
+        context.fillText(`${location.address[7].formatted_address}`, 20 + paddingLeft, currentY); // City, Country
+        currentY += lineHeight;
+  
+        const formattedAddress = location.address[0].formatted_address;
+        const maxLineWidth = canvas.width - 2 * (horizontalPadding + paddingLeft);
+  
+        const lines = breakTextIntoLines(formattedAddress, context, maxLineWidth);
+  
+        lines.forEach((line:any) => {
+          context.fillText(line, 20 + paddingLeft, currentY);
+          currentY += lineHeight;
+        }); // complete specific address
+  
+        context.fillText(`Lat ${location.latitude}, Long ${location.longitude}`, 20 + paddingLeft, currentY); // long and lat
+        currentY += lineHeight;
+  
+        context.fillText(`${DateFormatter(file.lastModifiedDate)}`, 20 + paddingLeft, currentY); // date and time
+  
+        photoCallback(canvas.toDataURL());
       }
 
       // setWatermarkSrc(canvas.toDataURL())
       photoCallback(canvas.toDataURL())
     }
 
-  }, [file, photoCallback])
+  }, [file, photoCallback, facingMode, location])
 
 
   return (
