@@ -47,14 +47,15 @@ export const Watermark:FC<waterMarkInterface> = ({ file, facingMode, location })
       // context?.drawImage(image, 0, 0)
       
       if (context && location) {
-        const backgroundOpacity = 0.7;
+        const backgroundOpacity = 0.5;
         const backgroundHeight = 150;
         const horizontalPadding = 30;
-        const verticalPadding = 10;
+        const verticalPadding = 7;
         const paddingLeft = 20;
-  
+      
         context.fillStyle = `rgba(42, 42, 42, ${backgroundOpacity})`;
 
+        //Background
         context.fillRect(
           horizontalPadding,
           canvas.height - backgroundHeight + verticalPadding - 28,
@@ -62,28 +63,37 @@ export const Watermark:FC<waterMarkInterface> = ({ file, facingMode, location })
           backgroundHeight - 2 * verticalPadding
         );
   
-        context.font = '16px Arial';
+        context.font = '17px Arial';
         context.fillStyle = 'rgb(255, 255, 255)';
   
         const lineHeight = 20;
-        let currentY = canvas.height - backgroundHeight + verticalPadding; 
-        context.fillText(`${location.address[7].formatted_address}`, 20 + paddingLeft, currentY); // City, Country
-        currentY += lineHeight;
-  
-        const formattedAddress = location.address[0].formatted_address;
+        let currentY = canvas.height - 150 + verticalPadding; 
         const maxLineWidth = canvas.width - 2 * (horizontalPadding + paddingLeft);
-  
-        const lines = breakTextIntoLines(formattedAddress, context, maxLineWidth);
-  
-        lines.forEach((line:any) => {
+        
+        // City, Country
+        const cityCountryText =  location.address[7].formatted_address;
+        const cityCountryLines = breakTextIntoLines(cityCountryText, context, maxLineWidth);
+
+        cityCountryLines.forEach((line) => {
           context.fillText(line, 20 + paddingLeft, currentY);
           currentY += lineHeight;
-        }); // complete specific address
+        });
   
-        context.fillText(`Lat ${location.latitude}, Long ${location.longitude}`, 20 + paddingLeft, currentY); // long and lat
+        // Complete specific address
+        const formattedAddress = location.address[0].formatted_address;
+        const formattedAddressLines = breakTextIntoLines(formattedAddress, context, maxLineWidth);
+
+        formattedAddressLines.forEach((line) => {
+          context.fillText(line, 20 + paddingLeft, currentY);
+          currentY += lineHeight;
+        });
+
+        // Latitude & Longitude
+        context.fillText(`Lat ${location.latitude}, Long ${location.longitude}`, 20 + paddingLeft, currentY); 
         currentY += lineHeight;
-  
-        context.fillText(`${DateFormatter(file.lastModifiedDate)}`, 20 + paddingLeft, currentY); // date and time
+
+        // Date & Time
+        context.fillText(`${DateFormatter(file.lastModifiedDate)}`, 20 + paddingLeft, currentY);
   
         photoCallback(canvas.toDataURL());
       }
@@ -99,3 +109,4 @@ export const Watermark:FC<waterMarkInterface> = ({ file, facingMode, location })
     <canvas ref={canvasRef} id="myCanvas" className='w-full p-4' />
   )
 }
+const calculateTextHeight = (lines:any, lineHeight:any) => lines.length * lineHeight;
