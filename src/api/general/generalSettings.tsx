@@ -1,4 +1,4 @@
-import { apiClient } from "http-commons";
+import { devClient } from "http-commons";
 import { useQuery } from "@tanstack/react-query";
 import { generalSettingsInterface } from "@_types/GeneralSettings.tsx/interface";
 
@@ -8,7 +8,7 @@ export const GeneralSettings = () => {
         queryKey: ['generalsettings'],
         queryFn: async () => {
             try {
-                const response = await apiClient.get('general-settings');
+                const response = await devClient.get('general-settings');
                 return response.data;
             } catch (error) {
                 throw error;

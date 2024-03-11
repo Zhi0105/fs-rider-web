@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import { PageTemplates } from "./Templates/PageTemplates";
 import { DropDown } from "@_components/Forms/Select";
 import { Controller, useForm } from "react-hook-form";
@@ -8,20 +8,20 @@ import { getGeoLocationCoding } from "@_api/location/geoCoding";
 import { useRouter, useSearchParams  } from "next/navigation";
 import { useOrderStore } from "@_store/order";
 import { useLocationStore } from "@_store/location";
-import Image from "next/image";
+import { useWaterMarkStore } from "@_store/watermark";
 import { Watermark } from "./Watermark";
+import { RTOContext } from "@_providers/context/RTOContext";
 
 interface PODInterface {
-  pod_id?: number,
+  pod_id?: string | number,
   order?: any
 }
 
 export const Landing = () => {
-  const [selectedStatus, setSelectedStatus] = useState<number | null>(null);
-  const [photo, setPhoto] = useState<string | null>(null);
-  const [facingMode, setFacingMode] = useState<"user" | "environment" | null>(
-    null
-  );
+  const { handleRTO } = useContext(RTOContext)
+  const [selectedStatus, setSelectedStatus] = useState<string | number>();
+  const [photo, setPhoto] = useState<number | any>(null);
+  const [facingMode, setFacingMode] = useState<"user" | "environment" | null>(null);
   const router = useRouter();
   const searchParams = useSearchParams()
   const [ params ] = useState(searchParams.get('q'))
@@ -33,6 +33,7 @@ export const Landing = () => {
       location: state.location,
       setLocation: state.setLocation,
   }));
+  const { watermark } = useWaterMarkStore((state) => ({ watermark: state.watermark }));
   
 
   useEffect(() => {
@@ -56,15 +57,39 @@ export const Landing = () => {
       order: params ? params : order ? order: ""
     },
   });
-  const onSubmit = (data: PODInterface): void => {
-    console.log(data);
+
+  const resetData = () => {
     // Clear local storage or total reset
     localStorage.removeItem("capturedPhoto");
     localStorage.removeItem("facingMode");
     setPhoto(null);
     setValue("order", "")
+    setValue("pod_id", "")
     setOrder("")
+  }
+
+  const onSubmit = (data: PODInterface): void => {
+    let is_delivered = data.pod_id == 1 ? Number(data.pod_id) : 0
+    let payload;
+
+      if(!is_delivered) {
+        payload = {
+          order_name: data.order,
+          is_delivered
+        }
+        handleRTO(payload, resetData)
+
+      } else {
+          payload = {
+            order_name: data.order,
+            proof_of_delivery: watermark,
+            is_delivered
+        }
+        handleRTO(payload, resetData)
+
+      }
   };
+
 
   const getLocation = () => {
     if (navigator.geolocation) {
@@ -172,10 +197,12 @@ export const Landing = () => {
                     {
                       id: 1,
                       title: "Delivered",
+                      is_delivered: true
                     },
                     {
                       id: 2,
                       title: "Failed Delivery",
+                      is_delivered: false
                     },
                   ]}
                 />

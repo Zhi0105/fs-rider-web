@@ -1,9 +1,12 @@
 import React, { useEffect, useRef, useCallback, FC }  from 'react'
 import { waterMarkInterface } from '@_types/watermark/interface';
 import { breakTextIntoLines, DateFormatter } from 'utils/helpers';
+import { useWaterMarkStore } from '@_store/watermark';
 
 export const Watermark:FC<waterMarkInterface> = ({ file, facingMode, location }) => {
   const canvasRef = useRef(null);
+  const { setWaterMark } = useWaterMarkStore((state) => ({ setWaterMark: state.setWaterMark }));
+
 
   const base64ToFile = async(photo: string, filename: string) => {
     const byteString = atob(photo.split(',')[1])
@@ -14,7 +17,7 @@ export const Watermark:FC<waterMarkInterface> = ({ file, facingMode, location })
     }
     const blob = new Blob([ab], { type: 'image/webp' })
     const newFile = new File([blob], filename, { type: 'image/webp' })
-    console.log("File name: ",newFile)
+    setWaterMark(newFile)
   }
 
   const photoCallback =  useCallback((photo: string | null):any => {
