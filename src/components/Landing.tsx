@@ -11,14 +11,14 @@ import { useLocationStore } from "@_store/location";
 import { useWaterMarkStore } from "@_store/watermark";
 import { Watermark } from "./Watermark";
 import { RTOContext } from "@_providers/context/RTOContext";
-
+import { toast } from "react-toastify"
 interface PODInterface {
   pod_id?: string | number,
   order?: any
 }
 
 export const Landing = () => {
-  const { handleRTO } = useContext(RTOContext)
+  const { handleRTO, RTODevLoading } = useContext(RTOContext)
   const [selectedStatus, setSelectedStatus] = useState<string | number>();
   const [photo, setPhoto] = useState<number | any>(null);
   const [facingMode, setFacingMode] = useState<"user" | "environment" | null>(null);
@@ -78,15 +78,13 @@ export const Landing = () => {
           is_delivered
         }
         handleRTO(payload, resetData)
-
       } else {
           payload = {
             order_name: data.order,
             proof_of_delivery: watermark,
             is_delivered
         }
-        handleRTO(payload, resetData)
-
+        photo ? handleRTO(payload, resetData)  : toast("Please attached proof of delivery", { type: "warning" }) 
       }
   };
 
@@ -211,12 +209,12 @@ export const Landing = () => {
             />
 
             <button
-              // onClick={handleSubmit((data) => onSubmit(data))}
+              disabled={RTODevLoading}
               type="submit"
               className="w-full text-white bg-[#4E80EE] flex justify-center items-center gap-4 cursor-pointer p-2 rounded-lg"
             >
-              {/* <BiLogIn width={50} height={50} /> */}
-              Submit
+              {RTODevLoading ? "Please wait..." : "Submit" }
+              
             </button>
         </div>
         </form>
