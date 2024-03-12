@@ -25,15 +25,15 @@ export const RTOProviders = ({ children }: { children: React.ReactNode }) => {
 
   const handleSendRTO = ( data: RTODataInterface, resetData: () => void) => {
     handleSentRTODev(data)
-    // !RTOErr && !RTODevLoading && resetData()
+    resetData()
   }
+
 
   return (
     <RTOContext.Provider
       value={{
-        handleRTO(data, resetData) {
-          handleSendRTO(data, resetData)
-        },
+        handleRTO: (data, resetData) => { handleSendRTO(data, resetData)},
+        RTODevLoading: RTODevLoading
       }}
     >
       {children}
