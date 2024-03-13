@@ -218,7 +218,8 @@ export const Landing = () => {
                   rules={{ required: true }}
                   render={({ field: { onChange, value } }) => (
                     <textarea 
-                    id="message" 
+                    onChange={onChange}
+                    value={value}
                     className="block p-2.5 min-h-[120px] w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 mb-4" 
                     placeholder="Reason for failed delivery..." 
                   />       
