@@ -67,6 +67,7 @@ export const Landing = () => {
     setPhoto(null);
     setValue("order", "")
     setValue("pod_id", "")
+    setValue("reason", "")
     setOrder("")
   }
 
