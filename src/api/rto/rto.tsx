@@ -18,8 +18,8 @@ export const SentRTODev = async(payload: RTODataInterface) => {
   // reason && formdata.append('reason', reason)
   formdata.append('is_delivered', String(is_delivered));
   
-  resetData && resetData()
   const result = await devClient.post('/riders-tag-order', formdata, config).then(res => {
+    resetData && resetData()
     return res.data
   })
   return result
