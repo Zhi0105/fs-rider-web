@@ -14,7 +14,8 @@ import { RTOContext } from "@_providers/context/RTOContext";
 import { toast } from "react-toastify"
 interface PODInterface {
   pod_id?: string | number,
-  order?: any
+  order?: any,
+  reason: string
 }
 
 export const Landing = () => {
@@ -54,7 +55,8 @@ export const Landing = () => {
   } = useForm<PODInterface>({
     defaultValues: {
       pod_id: 0,
-      order: params ? params : order ? order: ""
+      order: params ? params : order ? order: "",
+      reason: ""
     },
   });
 
@@ -75,7 +77,8 @@ export const Landing = () => {
       if(!is_delivered) {
         payload = {
           order_name: data.order,
-          is_delivered
+          is_delivered,
+          reason: data.reason
         }
         handleRTO(payload, resetData)
       } else {
@@ -208,10 +211,30 @@ export const Landing = () => {
               name="pod_id"
             />
 
+            {selectedStatus === 2 && (
+              <div>
+                <Controller
+                  control={control}
+                  rules={{ required: true }}
+                  render={({ field: { onChange, value } }) => (
+                    <textarea 
+                    id="message" 
+                    className="block p-2.5 min-h-[120px] w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 mb-4" 
+                    placeholder="Reason for failed delivery..." 
+                  />       
+                  )}
+                  name="reason"
+                />
+                {errors.reason && (
+                  <p className="text-sm text-red-400 indent-2">failed delivery reason is required*</p>
+                )}  
+              </div>
+            )}
+
             <button
               disabled={RTODevLoading}
               type="submit"
-              className="w-full text-white bg-[#4E80EE] flex justify-center items-center gap-4 cursor-pointer p-2 rounded-lg"
+              className="w-full text-white bg-[#4E80EE] flex justify-center items-center gap-4 cursor-pointer p-2 rounded-lg mt-2"
             >
               {RTODevLoading ? "Please wait..." : "Submit" }
               

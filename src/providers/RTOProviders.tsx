@@ -24,8 +24,12 @@ export const RTOProviders = ({ children }: { children: React.ReactNode }) => {
   });
 
   const handleSendRTO = ( data: RTODataInterface, resetData: () => void) => {
-    handleSentRTODev(data)
-    resetData()
+    let newData = {
+      ...data,
+      resetData
+    }
+    handleSentRTODev(newData)
+    // resetData()
   }
 
 
