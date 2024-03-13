@@ -1,11 +1,14 @@
 import React, { useEffect, useRef, useCallback, FC }  from 'react'
 import { waterMarkInterface } from '@_types/watermark/interface';
 import { breakTextIntoLines, DateFormatter } from 'utils/helpers';
+import { useWaterMarkStore } from '@_store/watermark';
 
 export const Watermark:FC<waterMarkInterface> = ({ file, facingMode, location }) => {
   const canvasRef = useRef(null);
+  const { setWaterMark } = useWaterMarkStore((state) => ({ setWaterMark: state.setWaterMark }));
 
-  const base64ToFile = async(photo: string, filename: string) => {
+
+  const base64ToFile = useCallback(async(photo: string, filename: string) => {
     const byteString = atob(photo.split(',')[1])
     const ab = new ArrayBuffer(byteString.length)
     const ia = new Uint8Array(ab)
@@ -14,12 +17,12 @@ export const Watermark:FC<waterMarkInterface> = ({ file, facingMode, location })
     }
     const blob = new Blob([ab], { type: 'image/webp' })
     const newFile = new File([blob], filename, { type: 'image/webp' })
-    console.log("File name: ",newFile)
-  }
+    setWaterMark(newFile)
+  }, [setWaterMark])
 
   const photoCallback =  useCallback((photo: string | null):any => {
     photo && base64ToFile(photo, 'proof_of_delivery.webp')
-  }, [])
+  }, [base64ToFile])
 
 
   useEffect(() => {
@@ -47,14 +50,15 @@ export const Watermark:FC<waterMarkInterface> = ({ file, facingMode, location })
       // context?.drawImage(image, 0, 0)
       
       if (context && location) {
-        const backgroundOpacity = 0.7;
+        const backgroundOpacity = 0.5;
         const backgroundHeight = 150;
         const horizontalPadding = 30;
-        const verticalPadding = 10;
+        const verticalPadding = 7;
         const paddingLeft = 20;
-  
+      
         context.fillStyle = `rgba(42, 42, 42, ${backgroundOpacity})`;
 
+        //Background
         context.fillRect(
           horizontalPadding,
           canvas.height - backgroundHeight + verticalPadding - 28,
@@ -62,28 +66,37 @@ export const Watermark:FC<waterMarkInterface> = ({ file, facingMode, location })
           backgroundHeight - 2 * verticalPadding
         );
   
-        context.font = '16px Arial';
+        context.font = '17px Arial';
         context.fillStyle = 'rgb(255, 255, 255)';
   
         const lineHeight = 20;
-        let currentY = canvas.height - backgroundHeight + verticalPadding; 
-        context.fillText(`${location.address[7].formatted_address}`, 20 + paddingLeft, currentY); // City, Country
-        currentY += lineHeight;
-  
-        const formattedAddress = location.address[0].formatted_address;
+        let currentY = canvas.height - 150 + verticalPadding; 
         const maxLineWidth = canvas.width - 2 * (horizontalPadding + paddingLeft);
-  
-        const lines = breakTextIntoLines(formattedAddress, context, maxLineWidth);
-  
-        lines.forEach((line:any) => {
+        
+        // City, Country
+        const cityCountryText =  location.address[7].formatted_address;
+        const cityCountryLines = breakTextIntoLines(cityCountryText, context, maxLineWidth);
+
+        cityCountryLines.forEach((line) => {
           context.fillText(line, 20 + paddingLeft, currentY);
           currentY += lineHeight;
-        }); // complete specific address
+        });
   
-        context.fillText(`Lat ${location.latitude}, Long ${location.longitude}`, 20 + paddingLeft, currentY); // long and lat
+        // Complete specific address
+        const formattedAddress = location.address[0].formatted_address;
+        const formattedAddressLines = breakTextIntoLines(formattedAddress, context, maxLineWidth);
+
+        formattedAddressLines.forEach((line) => {
+          context.fillText(line, 20 + paddingLeft, currentY);
+          currentY += lineHeight;
+        });
+
+        // Latitude & Longitude
+        context.fillText(`Lat ${location.latitude}, Long ${location.longitude}`, 20 + paddingLeft, currentY); 
         currentY += lineHeight;
-  
-        context.fillText(`${DateFormatter(file.lastModifiedDate)}`, 20 + paddingLeft, currentY); // date and time
+
+        // Date & Time
+        context.fillText(`${DateFormatter(file.lastModifiedDate)}`, 20 + paddingLeft, currentY);
   
         photoCallback(canvas.toDataURL());
       }
