@@ -23,8 +23,8 @@ const PhotoDisplay: React.FC<PhotoDisplayProps> = ({
 
   const handleCheck = () => {
     // Save photo and facingMode in localStorage
-    localStorage.setItem("capturedPhoto", photo);
-    localStorage.setItem("facingMode", facingMode);
+    sessionStorage.setItem("capturedPhoto", photo);
+    sessionStorage.setItem("facingMode", facingMode);
     // Navigate to Landing page
     router.push("/");
   };

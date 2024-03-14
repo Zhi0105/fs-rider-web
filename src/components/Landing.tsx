@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useContext } from "react";
+import React, { useEffect, useState, useContext, useCallback } from "react";
 import { PageTemplates } from "./Templates/PageTemplates";
 import { DropDown } from "@_components/Forms/Select";
 import { Controller, useForm } from "react-hook-form";
@@ -19,7 +19,7 @@ interface PODInterface {
 }
 
 export const Landing = () => {
-  const { handleRTO, RTODevLoading } = useContext(RTOContext)
+  const { handleRTO, RTODevLoading, RTOFSLoading, RTOTHLoading, RTOVNLoading } = useContext(RTOContext)
   const [selectedStatus, setSelectedStatus] = useState<string | number>();
   const [photo, setPhoto] = useState<number | any>(null);
   const [facingMode, setFacingMode] = useState<"user" | "environment" | null>(null);
@@ -37,10 +37,11 @@ export const Landing = () => {
   const { watermark } = useWaterMarkStore((state) => ({ watermark: state.watermark }));
   
 
+
   useEffect(() => {
     // Retrieve photo from localStorage
-    const storedPhoto = localStorage.getItem("capturedPhoto");
-    const storedFacingMode = localStorage.getItem("facingMode");
+    const storedPhoto = sessionStorage.getItem("capturedPhoto");
+    const storedFacingMode = sessionStorage.getItem("facingMode");
     setPhoto(storedPhoto);
     setFacingMode(storedFacingMode === "user" ? "user" : "environment");
   }, []);
@@ -70,6 +71,8 @@ export const Landing = () => {
     setValue("reason", "")
     setOrder("")
   }
+
+
 
   const onSubmit = (data: PODInterface): void => {
     let is_delivered = data.pod_id == 1 ? Number(data.pod_id) : 0
@@ -122,6 +125,15 @@ export const Landing = () => {
       console.log("Geolocation is not suported by this browser");
     }
   };
+
+  const loadingCallback = useCallback(() => {
+    if(RTODevLoading || RTOFSLoading || RTOTHLoading || RTOVNLoading) {
+      return true
+    }
+     else {
+      return false
+     }
+  }, [RTODevLoading, RTOFSLoading, RTOTHLoading, RTOVNLoading])
 
   return (
     <PageTemplates>
@@ -234,11 +246,11 @@ export const Landing = () => {
             )}
 
             <button
-              disabled={RTODevLoading}
+              disabled={loadingCallback()}
               type="submit"
               className="w-full text-white bg-[#4E80EE] flex justify-center items-center gap-4 cursor-pointer p-2 rounded-lg mt-2"
             >
-              {RTODevLoading ? "Please wait..." : "Submit" }
+              {RTODevLoading || RTOFSLoading || RTOTHLoading || RTOVNLoading ? "Please wait..." : "Submit" }
               
             </button>
         </div>
