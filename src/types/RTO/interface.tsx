@@ -9,5 +9,8 @@ export interface RTODataInterface {
 
 export interface RTOContextInteface {
   handleRTO: (data:RTODataInterface, resetData: () => void) => void,
-  RTODevLoading: boolean 
+  RTODevLoading: boolean ,
+  RTOFSLoading: boolean,
+  RTOTHLoading: boolean,
+  RTOVNLoading: boolean
 }
