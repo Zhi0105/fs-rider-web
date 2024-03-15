@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext, useCallback } from "react";
 import { PageTemplates } from "./Templates/PageTemplates";
 import { DropDown } from "@_components/Forms/Select";
 import { Controller, useForm } from "react-hook-form";
@@ -8,20 +8,21 @@ import { getGeoLocationCoding } from "@_api/location/geoCoding";
 import { useRouter, useSearchParams  } from "next/navigation";
 import { useOrderStore } from "@_store/order";
 import { useLocationStore } from "@_store/location";
-import Image from "next/image";
+import { useWaterMarkStore } from "@_store/watermark";
 import { Watermark } from "./Watermark";
-
+import { RTOContext } from "@_providers/context/RTOContext";
+import { toast } from "react-toastify"
 interface PODInterface {
-  pod_id?: number,
-  order?: any
+  pod_id?: string | number,
+  order?: any,
+  reason: string
 }
 
 export const Landing = () => {
-  const [selectedStatus, setSelectedStatus] = useState<number | null>(null);
-  const [photo, setPhoto] = useState<string | null>(null);
-  const [facingMode, setFacingMode] = useState<"user" | "environment" | null>(
-    null
-  );
+  const { handleRTO, RTODevLoading, RTOFSLoading, RTOTHLoading, RTOVNLoading } = useContext(RTOContext)
+  const [selectedStatus, setSelectedStatus] = useState<string | number>();
+  const [photo, setPhoto] = useState<number | any>(null);
+  const [facingMode, setFacingMode] = useState<"user" | "environment" | null>(null);
   const router = useRouter();
   const searchParams = useSearchParams()
   const [ params ] = useState(searchParams.get('q'))
@@ -33,12 +34,14 @@ export const Landing = () => {
       location: state.location,
       setLocation: state.setLocation,
   }));
+  const { watermark } = useWaterMarkStore((state) => ({ watermark: state.watermark }));
   
+
 
   useEffect(() => {
     // Retrieve photo from localStorage
-    const storedPhoto = localStorage.getItem("capturedPhoto");
-    const storedFacingMode = localStorage.getItem("facingMode");
+    const storedPhoto = sessionStorage.getItem("capturedPhoto");
+    const storedFacingMode = sessionStorage.getItem("facingMode");
     setPhoto(storedPhoto);
     setFacingMode(storedFacingMode === "user" ? "user" : "environment");
   }, []);
@@ -53,18 +56,45 @@ export const Landing = () => {
   } = useForm<PODInterface>({
     defaultValues: {
       pod_id: 0,
-      order: params ? params : order ? order: ""
+      order: params ? params : order ? order: "",
+      reason: ""
     },
   });
-  const onSubmit = (data: PODInterface): void => {
-    console.log(data);
+
+  const resetData = () => {
     // Clear local storage or total reset
     localStorage.removeItem("capturedPhoto");
     localStorage.removeItem("facingMode");
     setPhoto(null);
     setValue("order", "")
+    setValue("pod_id", "")
+    setValue("reason", "")
     setOrder("")
+  }
+
+
+
+  const onSubmit = (data: PODInterface): void => {
+    let is_delivered = data.pod_id == 1 ? Number(data.pod_id) : 0
+    let payload;
+
+      if(!is_delivered) {
+        payload = {
+          order_name: data.order,
+          is_delivered,
+          reason: data.reason
+        }
+        handleRTO(payload, resetData)
+      } else {
+          payload = {
+            order_name: data.order,
+            proof_of_delivery: watermark,
+            is_delivered
+        }
+        photo ? handleRTO(payload, resetData)  : toast("Please attached proof of delivery", { type: "warning" }) 
+      }
   };
+
 
   const getLocation = () => {
     if (navigator.geolocation) {
@@ -96,6 +126,15 @@ export const Landing = () => {
     }
   };
 
+  const loadingCallback = useCallback(() => {
+    if(RTODevLoading || RTOFSLoading || RTOTHLoading || RTOVNLoading) {
+      return true
+    }
+     else {
+      return false
+     }
+  }, [RTODevLoading, RTOFSLoading, RTOTHLoading, RTOVNLoading])
+
   return (
     <PageTemplates>
       <div className="landing_main min-h-screen pb-4">
@@ -124,6 +163,7 @@ export const Landing = () => {
                 file={photo}
                 facingMode={facingMode}
                 location={location}
+                order={order}
               />
             ) : (
               <Lottie animationData={img} className="p-4" />
@@ -172,10 +212,12 @@ export const Landing = () => {
                     {
                       id: 1,
                       title: "Delivered",
+                      is_delivered: true
                     },
                     {
                       id: 2,
                       title: "Failed Delivery",
+                      is_delivered: false
                     },
                   ]}
                 />
@@ -183,13 +225,34 @@ export const Landing = () => {
               name="pod_id"
             />
 
+            {selectedStatus === 2 && (
+              <div>
+                <Controller
+                  control={control}
+                  rules={{ required: true }}
+                  render={({ field: { onChange, value } }) => (
+                    <textarea 
+                    onChange={onChange}
+                    value={value}
+                    className="block p-2.5 min-h-[120px] w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 mb-4" 
+                    placeholder="Reason for failed delivery..." 
+                  />       
+                  )}
+                  name="reason"
+                />
+                {errors.reason && (
+                  <p className="text-sm text-red-400 indent-2">failed delivery reason is required*</p>
+                )}  
+              </div>
+            )}
+
             <button
-              // onClick={handleSubmit((data) => onSubmit(data))}
+              disabled={loadingCallback()}
               type="submit"
-              className="w-full text-white bg-[#4E80EE] flex justify-center items-center gap-4 cursor-pointer p-2 rounded-lg"
+              className="w-full text-white bg-[#4E80EE] flex justify-center items-center gap-4 cursor-pointer p-2 rounded-lg mt-2"
             >
-              {/* <BiLogIn width={50} height={50} /> */}
-              Submit
+              {RTODevLoading || RTOFSLoading || RTOTHLoading || RTOVNLoading ? "Please wait..." : "Submit" }
+              
             </button>
         </div>
         </form>

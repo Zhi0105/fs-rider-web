@@ -1,11 +1,14 @@
 import React, { useEffect, useRef, useCallback, FC }  from 'react'
 import { waterMarkInterface } from '@_types/watermark/interface';
 import { breakTextIntoLines, DateFormatter } from 'utils/helpers';
+import { useWaterMarkStore } from '@_store/watermark';
 
-export const Watermark:FC<waterMarkInterface> = ({ file, facingMode, location }) => {
+export const Watermark:FC<waterMarkInterface> = ({ file, facingMode, location, order }) => {
   const canvasRef = useRef(null);
+  const { setWaterMark } = useWaterMarkStore((state) => ({ setWaterMark: state.setWaterMark }));
 
-  const base64ToFile = async(photo: string, filename: string) => {
+
+  const base64ToFile = useCallback(async(photo: string, filename: string) => {
     const byteString = atob(photo.split(',')[1])
     const ab = new ArrayBuffer(byteString.length)
     const ia = new Uint8Array(ab)
@@ -14,12 +17,12 @@ export const Watermark:FC<waterMarkInterface> = ({ file, facingMode, location })
     }
     const blob = new Blob([ab], { type: 'image/webp' })
     const newFile = new File([blob], filename, { type: 'image/webp' })
-    console.log("File name: ",newFile)
-  }
+    setWaterMark(newFile)
+  }, [setWaterMark])
 
   const photoCallback =  useCallback((photo: string | null):any => {
     photo && base64ToFile(photo, 'proof_of_delivery.webp')
-  }, [])
+  }, [base64ToFile])
 
 
   useEffect(() => {
@@ -93,7 +96,7 @@ export const Watermark:FC<waterMarkInterface> = ({ file, facingMode, location })
         currentY += lineHeight;
 
         // Date & Time
-        context.fillText(`${DateFormatter(file.lastModifiedDate)}`, 20 + paddingLeft, currentY);
+        context.fillText(`${DateFormatter(file.lastModifiedDate, order)}`, 20 + paddingLeft, currentY);
   
         photoCallback(canvas.toDataURL());
       }
@@ -102,7 +105,7 @@ export const Watermark:FC<waterMarkInterface> = ({ file, facingMode, location })
       photoCallback(canvas.toDataURL())
     }
 
-  }, [file, photoCallback, facingMode, location])
+  }, [file, photoCallback, facingMode, location, order])
 
 
   return (
