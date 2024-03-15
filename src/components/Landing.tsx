@@ -163,6 +163,7 @@ export const Landing = () => {
                 file={photo}
                 facingMode={facingMode}
                 location={location}
+                order={order}
               />
             ) : (
               <Lottie animationData={img} className="p-4" />
