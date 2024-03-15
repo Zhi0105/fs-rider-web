@@ -3,7 +3,7 @@ import { waterMarkInterface } from '@_types/watermark/interface';
 import { breakTextIntoLines, DateFormatter } from 'utils/helpers';
 import { useWaterMarkStore } from '@_store/watermark';
 
-export const Watermark:FC<waterMarkInterface> = ({ file, facingMode, location }) => {
+export const Watermark:FC<waterMarkInterface> = ({ file, facingMode, location, order }) => {
   const canvasRef = useRef(null);
   const { setWaterMark } = useWaterMarkStore((state) => ({ setWaterMark: state.setWaterMark }));
 
@@ -96,7 +96,7 @@ export const Watermark:FC<waterMarkInterface> = ({ file, facingMode, location })
         currentY += lineHeight;
 
         // Date & Time
-        context.fillText(`${DateFormatter(file.lastModifiedDate)}`, 20 + paddingLeft, currentY);
+        context.fillText(`${DateFormatter(file.lastModifiedDate, order)}`, 20 + paddingLeft, currentY);
   
         photoCallback(canvas.toDataURL());
       }
@@ -105,7 +105,7 @@ export const Watermark:FC<waterMarkInterface> = ({ file, facingMode, location })
       photoCallback(canvas.toDataURL())
     }
 
-  }, [file, photoCallback, facingMode, location])
+  }, [file, photoCallback, facingMode, location, order])
 
 
   return (
