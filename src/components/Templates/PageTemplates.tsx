@@ -3,7 +3,6 @@ import { NoPage } from '../NoPage'
 import { Header } from '@_components/Header'
 import { Loader } from '@_components/Loader'
 import { Footer } from '@_components/Footer'
-import { NextSeo } from 'next-seo';
 
 export const PageTemplates = ({ children }: { children: React.ReactNode }) => {
   const [ screenWidth, setScreenWidth ] = useState<number | undefined>()
