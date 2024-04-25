@@ -81,10 +81,12 @@ export const Landing = () => {
       if(!is_delivered) {
         payload = {
           order_name: data.order,
+          proof_of_delivery: watermark,
           is_delivered,
           reason: data.reason
         }
-        handleRTO(payload, resetData)
+        // handleRTO(payload, resetData)
+        photo ? handleRTO(payload, resetData)  : toast("Please attached proof of delivery", { type: "warning" }) 
       } else {
           payload = {
             order_name: data.order,
