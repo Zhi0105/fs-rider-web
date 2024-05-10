@@ -121,6 +121,7 @@ export const Landing = () => {
         },
         (error) => {
           console.log("Error getting location", error);
+          toast.error("Location permission is blocked. Please enable the location browser permission to proceed.");
         }
       );
     } else {
