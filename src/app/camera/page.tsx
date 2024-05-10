@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { PiRecordFill } from "react-icons/pi";
 import { MdCameraswitch } from "react-icons/md";
+import { toast } from "react-toastify"
 
 interface PhotoDisplayProps {
   photo: string;
@@ -72,6 +73,7 @@ const CameraPage = () => {
       }
     } catch (error) {
       console.error("Error accessing camera:", error);
+      toast.error("Camera permission is blocked. Please enable the camera browser permission to proceed.");
     }
   }, [facingMode]);
 
