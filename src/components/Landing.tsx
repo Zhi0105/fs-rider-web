@@ -12,6 +12,8 @@ import { useWaterMarkStore } from "@_store/watermark";
 import { Watermark } from "./Watermark";
 import { RTOContext } from "@_providers/context/RTOContext";
 import { toast } from "react-toastify"
+import EXIF from 'exif-js'
+
 interface PODInterface {
   pod_id?: string | number,
   order?: any,
@@ -97,7 +99,6 @@ export const Landing = () => {
       }
   };
 
-
   const getLocation = () => {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
@@ -128,6 +129,68 @@ export const Landing = () => {
       console.log("Geolocation is not suported by this browser");
     }
   };
+
+  const convertDMSToDD = (degrees: any, minutes: any, seconds: any, direction: any) => {
+    let dd = degrees + minutes / 60 + seconds / (60 * 60);
+
+    if (direction === 'S' || direction === 'W') {
+      dd = dd * -1;
+    }
+
+    return dd;
+  };
+
+  const handleExifImageChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file:any = event.target.files
+    if (file?.length > 0) {
+      const selectedFile = file[0]
+      setPhoto(await fileTobase64(selectedFile))
+      await EXIF.getData(selectedFile, () => {
+        const  orientation = EXIF.getAllTags(selectedFile)
+        if (orientation && orientation.GPSLatitude && orientation.GPSLongitude) {
+          const latitude = convertDMSToDD(
+            orientation.GPSLatitude[0],
+            orientation.GPSLatitude[1],
+            orientation.GPSLatitude[2],
+            orientation.GPSLatitudeRef
+          );
+
+          const longitude = convertDMSToDD(
+            orientation.GPSLongitude[0],
+            orientation.GPSLongitude[1],
+            orientation.GPSLongitude[2],
+            orientation.GPSLongitudeRef
+          );
+
+          // console.log(`Latitude: ${latitude}, Longitude: ${longitude}`);
+          let payload = {
+            latitude,
+            longitude
+          };
+          const geoLocationAddress = getGeoLocationCoding(payload);
+          geoLocationAddress.then(res => {
+           if(res) {
+            setLocation({
+              ...payload,
+              address: [ ...res ],
+            });
+            setOrder(watch("order"))
+          }
+        }).catch(err => console.log("@GLA:", err))
+        } else {
+          toast.warning("No location detected.")
+        }
+      })
+    } else {
+      console.log("no selected file")
+    }
+  }
+
+  const fileTobase64 = (file: any) => new Promise((resolve, reject) => {
+    const reader = new FileReader()
+    reader.readAsDataURL(file)
+    reader.onload = () => resolve(reader.result)
+  })
 
   const loadingCallback = useCallback(() => {
     if(RTODevLoading || RTOFSLoading || RTOTHLoading || RTOVNLoading) {
@@ -160,6 +223,12 @@ export const Landing = () => {
             <p className="text-sm text-red-400 indent-2 pt-2">order number is required*</p>
           )}  
           
+          <input 
+            type="file"
+            onChange={handleExifImageChange} 
+            className="exif-image w-4/5 text-sm py-4 file:rounded-md file:border-0 file:bg-[#2E426C] file:py-2.5 file:px-4 file:text-sm file:font-semibold file:text-white hover:file:bg-primary-700 focus:outline-none disabled:pointer-events-none disabled:opacity-60" 
+          />
+
           <div className="image_preview mt-5 w-4/5 rounded-lg bg-[#F3F3F3]">
             {photo ? (
               <Watermark 
@@ -257,7 +326,7 @@ export const Landing = () => {
               {RTODevLoading || RTOFSLoading || RTOTHLoading || RTOVNLoading ? "Please wait..." : "Submit" }
               
             </button>
-        </div>
+          </div>
         </form>
       </div>
     </PageTemplates>

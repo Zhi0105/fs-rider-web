@@ -7,7 +7,6 @@ export const Watermark:FC<waterMarkInterface> = ({ file, facingMode, location, o
   const canvasRef = useRef(null);
   const { setWaterMark } = useWaterMarkStore((state) => ({ setWaterMark: state.setWaterMark }));
 
-
   const base64ToFile = useCallback(async(photo: string, filename: string) => {
     const byteString = atob(photo.split(',')[1])
     const ab = new ArrayBuffer(byteString.length)
@@ -49,6 +48,38 @@ export const Watermark:FC<waterMarkInterface> = ({ file, facingMode, location, o
 
       // context?.drawImage(image, 0, 0)
       
+
+      // WATERMARK WHEN LOCATION NOT DETECTED
+      if(context && !location) {
+        const backgroundOpacity = 0.5;
+        const backgroundHeight = 150;
+        const horizontalPadding = 30;
+        const verticalPadding = 7;
+        const paddingLeft = 20;
+      
+        context.fillStyle = `rgba(42, 42, 42, ${backgroundOpacity})`;
+
+        
+        //Background
+        context.fillRect(
+          horizontalPadding,
+          canvas.height - backgroundHeight + verticalPadding - 28,
+          canvas.width - 2 * horizontalPadding,
+          backgroundHeight - 2 * verticalPadding
+        );
+
+        context.font = '17px Arial';
+        context.fillStyle = 'rgb(255, 255, 255)';
+  
+        const lineHeight = 20;
+        let currentY = canvas.height - 100 + verticalPadding; 
+        
+          // Latitude & Longitude
+          context.fillText(`No location detected`, 30 + paddingLeft, currentY); 
+          currentY += lineHeight;
+      }
+      
+      // WATERMARK WHEN LOCATION DETECTED
       if (context && location) {
         const backgroundOpacity = 0.5;
         const backgroundHeight = 150;
@@ -57,6 +88,7 @@ export const Watermark:FC<waterMarkInterface> = ({ file, facingMode, location, o
         const paddingLeft = 20;
       
         context.fillStyle = `rgba(42, 42, 42, ${backgroundOpacity})`;
+        
 
         //Background
         context.fillRect(
