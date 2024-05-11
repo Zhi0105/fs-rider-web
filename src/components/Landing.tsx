@@ -237,7 +237,7 @@ export const Landing = () => {
   useEffect(() => {
     podCheckCallback(getValues("order"))
     router.push(`https://docs.google.com/forms/d/e/1FAIpQLSdTsTSzWkSbzmbwEojLGHJFukzBAfjGNrsZg_tzEE7z_G2EuQ/viewform?usp=pp_url&entry.2010028421=${getValues("order")}`)
-  }, [podCheckCallback])
+  }, [podCheckCallback, router, getValues])
 
 
   if(RTODevLoading || RTOFSLoading || RTOTHLoading || RTOVNLoading) {
