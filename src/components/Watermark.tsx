@@ -47,10 +47,10 @@ export const Watermark:FC<waterMarkInterface> = ({ file, facingMode, location, o
       }
 
       // context?.drawImage(image, 0, 0)
-      
 
       // WATERMARK WHEN LOCATION NOT DETECTED
-      if(context && !location) {
+      if(context && !location.hasOwnProperty("address")){
+      
         const backgroundOpacity = 0.5;
         const backgroundHeight = 150;
         const horizontalPadding = 30;
@@ -80,7 +80,7 @@ export const Watermark:FC<waterMarkInterface> = ({ file, facingMode, location, o
       }
       
       // WATERMARK WHEN LOCATION DETECTED
-      if (context && location) {
+      if(context && location.hasOwnProperty("address")){
         const backgroundOpacity = 0.5;
         const backgroundHeight = 150;
         const horizontalPadding = 30;

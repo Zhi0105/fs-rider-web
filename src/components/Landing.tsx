@@ -179,6 +179,7 @@ export const Landing = () => {
         }).catch(err => console.log("@GLA:", err))
         } else {
           toast.warning("No location detected.")
+          setLocation({})
         }
       })
     } else {
