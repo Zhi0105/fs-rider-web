@@ -231,30 +231,14 @@ export const Landing = () => {
       })
     }
     
-    // await PODCheck({order_name: order}).then(res => {
-    //   console.log(res.data)
-    //   setPODC(res.data)      
-      
-    // }).catch(err => {
-    //   console.log("@PODC:", err.response.data.message)
-    // })
-
   }, [watch("order")])
 
   
   useEffect(() => {
     podCheckCallback(getValues("order"))
+    window.location.href = `https://docs.google.com/forms/d/e/1FAIpQLSdTsTSzWkSbzmbwEojLGHJFukzBAfjGNrsZg_tzEE7z_G2EuQ/viewform?usp=pp_url&entry.2010028421=${getValues("order")}`
   }, [podCheckCallback])
 
-
-  // const loadingCallback = useCallback(() => {
-  //   if(RTODevLoading || RTOFSLoading || RTOTHLoading || RTOVNLoading) {
-  //     return true
-  //   }
-  //    else {
-  //     return false
-  //    }
-  // }, [RTODevLoading, RTOFSLoading, RTOTHLoading, RTOVNLoading])
 
   if(RTODevLoading || RTOFSLoading || RTOTHLoading || RTOVNLoading) {
     return (
@@ -264,154 +248,155 @@ export const Landing = () => {
 
 
   return (
-    <PageTemplates>
-      <div className="landing_main min-h-screen pb-4">
-        <form className="form-container flex flex-col justify-center items-center" onSubmit={handleSubmit((data) => onSubmit(data))}>
-          <Controller
-            control={control}
-            rules={{ required: true }}
-            render={({ field: { onChange, value } }) => (
-              <input 
-                className="order_number w-4/5 text-xl text-[#2E426C] font-bold text-center mt-5 shadow-lg bg-white rounded-lg p-4 outline-none"
-                type="text"
-                value={value}
-                onChange={onChange}
-                placeholder="Order number"
-              />         
-            )}
-            name="order"
-          />
-          {errors.order && (
-            <p className="text-sm text-red-400 indent-2 pt-2">order number is required*</p>
-          )}  
+    null
+//     <PageTemplates>
+//       <div className="landing_main min-h-screen pb-4">
+//         <form className="form-container flex flex-col justify-center items-center" onSubmit={handleSubmit((data) => onSubmit(data))}>
+//           <Controller
+//             control={control}
+//             rules={{ required: true }}
+//             render={({ field: { onChange, value } }) => (
+//               <input 
+//                 className="order_number w-4/5 text-xl text-[#2E426C] font-bold text-center mt-5 shadow-lg bg-white rounded-lg p-4 outline-none"
+//                 type="text"
+//                 value={value}
+//                 onChange={onChange}
+//                 placeholder="Order number"
+//               />         
+//             )}
+//             name="order"
+//           />
+//           {errors.order && (
+//             <p className="text-sm text-red-400 indent-2 pt-2">order number is required*</p>
+//           )}  
           
-          {PODC && !PODC?.is_end_state && 
-            <input 
-              type="file"
-              onChange={handleExifImageChange} 
-              className="exif-image w-4/5 text-sm py-4 file:rounded-md file:border-0 file:bg-[#2E426C] file:py-2.5 file:px-4 file:text-sm file:font-semibold file:text-white hover:file:bg-primary-700 focus:outline-none disabled:pointer-events-none disabled:opacity-60" 
-            />
-          }
+//           {PODC && !PODC?.is_end_state && 
+//             <input 
+//               type="file"
+//               onChange={handleExifImageChange} 
+//               className="exif-image w-4/5 text-sm py-4 file:rounded-md file:border-0 file:bg-[#2E426C] file:py-2.5 file:px-4 file:text-sm file:font-semibold file:text-white hover:file:bg-primary-700 focus:outline-none disabled:pointer-events-none disabled:opacity-60" 
+//             />
+//           }
 
-          {PODC && PODC?.is_end_state && PODC?.pod &&
-            <div className="w-[350] h-[450] py-8">
-              <Image src={PODC?.pod} alt="POD" priority width={350} height={450}/>
-            </div>
-          }
+//           {PODC && PODC?.is_end_state && PODC?.pod &&
+//             <div className="w-[350] h-[450] py-8">
+//               <Image src={PODC?.pod} alt="POD" priority width={350} height={450}/>
+//             </div>
+//           }
 
-          {PODC && PODC?.is_end_state &&
-            <div className="w-[350] h-[450] py-8">
-              <h1 className="text-xl">Already tagged as 
-                <p className={`font-bold text-center text-2xl capitalize ${PODC?.status.toLowerCase() === 'delivered' ? "text-green-500" : "text-red-500"}`}>
-                  {`${PODC?.status}`}
-                </p>
-              </h1>
-            </div>
-          }
+//           {PODC && PODC?.is_end_state &&
+//             <div className="w-[350] h-[450] py-8">
+//               <h1 className="text-xl">Already tagged as 
+//                 <p className={`font-bold text-center text-2xl capitalize ${PODC?.status.toLowerCase() === 'delivered' ? "text-green-500" : "text-red-500"}`}>
+//                   {`${PODC?.status}`}
+//                 </p>
+//               </h1>
+//             </div>
+//           }
       
-          {PODC && !PODC?.is_end_state && 
-            <div className="image_preview mt-5 w-4/5 rounded-lg bg-[#F3F3F3]">
-              {photo ? (
-                <Watermark 
-                  file={photo}
-                  facingMode={facingMode}
-                  location={location}
-                  order={order}
-                />
-              ) : (
-                <Lottie animationData={img} className="p-4" />
-              )}
-            </div>
-          }
+//           {PODC && !PODC?.is_end_state && 
+//             <div className="image_preview mt-5 w-4/5 rounded-lg bg-[#F3F3F3]">
+//               {photo ? (
+//                 <Watermark 
+//                   file={photo}
+//                   facingMode={facingMode}
+//                   location={location}
+//                   order={order}
+//                 />
+//               ) : (
+//                 <Lottie animationData={img} className="p-4" />
+//               )}
+//             </div>
+//           }
           
-          {PODC && !PODC?.is_end_state && 
-            <div className="mt-5 w-4/5 bg-white rounded-lg shadow-lg p-4">
+//           {PODC && !PODC?.is_end_state && 
+//             <div className="mt-5 w-4/5 bg-white rounded-lg shadow-lg p-4">
 
-<button
-  onClick={() => {
-    getLocation();
-    // router.push("/camera"); 
-  }}
-  type="button"
-  className="w-full text-white bg-[#555A6E] flex justify-center items-center gap-4 cursor-pointer p-2 rounded-lg mb-5"
->
-  {/* <BiLogIn width={50} height={50} /> */}
-  Proof of Delivery
-</button>
+// <button
+//   onClick={() => {
+//     getLocation();
+//     // router.push("/camera"); 
+//   }}
+//   type="button"
+//   className="w-full text-white bg-[#555A6E] flex justify-center items-center gap-4 cursor-pointer p-2 rounded-lg mb-5"
+// >
+//   {/* <BiLogIn width={50} height={50} /> */}
+//   Proof of Delivery
+// </button>
 
-  <Controller
-    control={control}
-    render={({ field: { onChange, value } }) => (
-      <DropDown
-        value={value}
-        onChange={(e) => {
-          onChange(e.target.value);
-          setSelectedStatus(parseInt(e.target.value, 10));
-        }}
-        className={`
-          h-full w-full border-2 p-2 text-center rounded-lg mb-5 outline-none appearance-none
-          ${
-            selectedStatus === 1
-              ? "text-[#295E48] bg-[#D9F9E6] border-[#D9F9E6]"
-              : ""
-          }
-          ${
-            selectedStatus === 2
-              ? "text-[#8C2822] bg-[#F9E3E2] border-[#F9E3E2]"
-              : ""
-          }
-        `}
-        ariaPlaceHolder="Status of Delivery"
-        required={true}
-        data={[
-          {
-            id: 1,
-            title: "Delivered",
-            is_delivered: true
-          },
-          {
-            id: 2,
-            title: "Failed Delivery",
-            is_delivered: false
-          },
-        ]}
-      />
-    )}
-    name="pod_id"
-  />
+//   <Controller
+//     control={control}
+//     render={({ field: { onChange, value } }) => (
+//       <DropDown
+//         value={value}
+//         onChange={(e) => {
+//           onChange(e.target.value);
+//           setSelectedStatus(parseInt(e.target.value, 10));
+//         }}
+//         className={`
+//           h-full w-full border-2 p-2 text-center rounded-lg mb-5 outline-none appearance-none
+//           ${
+//             selectedStatus === 1
+//               ? "text-[#295E48] bg-[#D9F9E6] border-[#D9F9E6]"
+//               : ""
+//           }
+//           ${
+//             selectedStatus === 2
+//               ? "text-[#8C2822] bg-[#F9E3E2] border-[#F9E3E2]"
+//               : ""
+//           }
+//         `}
+//         ariaPlaceHolder="Status of Delivery"
+//         required={true}
+//         data={[
+//           {
+//             id: 1,
+//             title: "Delivered",
+//             is_delivered: true
+//           },
+//           {
+//             id: 2,
+//             title: "Failed Delivery",
+//             is_delivered: false
+//           },
+//         ]}
+//       />
+//     )}
+//     name="pod_id"
+//   />
 
-  {selectedStatus === 2 && (
-    <div>
-      <Controller
-        control={control}
-        rules={{ required: true }}
-        render={({ field: { onChange, value } }) => (
-          <textarea 
-          onChange={onChange}
-          value={value}
-          className="block p-2.5 min-h-[120px] w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 mb-4" 
-          placeholder="Reason for failed delivery..." 
-        />       
-        )}
-        name="reason"
-      />
-      {errors.reason && (
-        <p className="text-sm text-red-400 indent-2">failed delivery reason is required*</p>
-      )}  
-    </div>
-  )}
+//   {selectedStatus === 2 && (
+//     <div>
+//       <Controller
+//         control={control}
+//         rules={{ required: true }}
+//         render={({ field: { onChange, value } }) => (
+//           <textarea 
+//           onChange={onChange}
+//           value={value}
+//           className="block p-2.5 min-h-[120px] w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 mb-4" 
+//           placeholder="Reason for failed delivery..." 
+//         />       
+//         )}
+//         name="reason"
+//       />
+//       {errors.reason && (
+//         <p className="text-sm text-red-400 indent-2">failed delivery reason is required*</p>
+//       )}  
+//     </div>
+//   )}
 
-  <button
-    type="submit"
-    className="w-full text-white bg-[#4E80EE] flex justify-center items-center gap-4 cursor-pointer p-2 rounded-lg mt-2"
-  >
-    Submit
-  </button>
-            </div>
-          } 
+//   <button
+//     type="submit"
+//     className="w-full text-white bg-[#4E80EE] flex justify-center items-center gap-4 cursor-pointer p-2 rounded-lg mt-2"
+//   >
+//     Submit
+//   </button>
+//             </div>
+//           } 
           
-        </form>
-      </div>
-    </PageTemplates>
+//         </form>
+//       </div>
+//     </PageTemplates>
   );
 };
