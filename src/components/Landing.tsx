@@ -411,6 +411,7 @@ export const Landing = () => {
         </div>
       </PageTemplates>
     );
+    
   }
 
 // };
