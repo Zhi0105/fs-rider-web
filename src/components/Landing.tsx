@@ -234,16 +234,16 @@ export const Landing = () => {
   // }, [watch("order")])
 
   
-  useEffect(() => {
-    // podCheckCallback(getValues("order"))
-    const order_prefix = getValues("order").split("-")[0]
-    if(order_prefix.toLowerCase() === "FS".toLowerCase() || order_prefix.toLowerCase() === "PO".toLowerCase()) {
-      router.push(`https://docs.google.com/forms/d/e/1FAIpQLSdTsTSzWkSbzmbwEojLGHJFukzBAfjGNrsZg_tzEE7z_G2EuQ/viewform?usp=pp_url&entry.2010028421=${getValues("order")}`)
-    }
+  // useEffect(() => {
+  //   // podCheckCallback(getValues("order"))
+  //   const order_prefix = getValues("order").split("-")[0]
+  //   if(order_prefix.toLowerCase() === "FS".toLowerCase() || order_prefix.toLowerCase() === "PO".toLowerCase()) {
+  //     router.push(`https://docs.google.com/forms/d/e/1FAIpQLSdTsTSzWkSbzmbwEojLGHJFukzBAfjGNrsZg_tzEE7z_G2EuQ/viewform?usp=pp_url&entry.2010028421=${getValues("order")}`)
+  //   }
   
-  }, [
-    // podCheckCallback, 
-    router, getValues])
+  // }, [
+  //   // podCheckCallback, 
+  //   router, getValues])
 
 
   if(RTODevLoading || RTOFSLoading || RTOTHLoading || RTOVNLoading) {
@@ -252,11 +252,11 @@ export const Landing = () => {
     )
   }
 
-  if(getValues("order").split("-")[0].toLowerCase() === "PO" || getValues("order").split("-")[0].toLowerCase() === "FS"){
-    return (
-      null
-    )
-  }
+  // if(getValues("order").split("-")[0].toLowerCase() === "PO" || getValues("order").split("-")[0].toLowerCase() === "FS"){
+  //   return (
+  //     null
+  //   )
+  // }
 
 
   // if(getValues("order").split("-")[0].toLowerCase() === "TH" || getValues("order").split("-")[0].toLowerCase() === "VN"){
@@ -411,6 +411,7 @@ export const Landing = () => {
         </div>
       </PageTemplates>
     );
+    
   }
 
 // };
