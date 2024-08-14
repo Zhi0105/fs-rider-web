@@ -38,3 +38,14 @@ You can check out [the Next.js GitHub repository](https://github.com/vercel/next
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+
+## ENV
+
+```bash
+API_URL=https://devapi.flowerstore.ph/v2
+# API_URL_FS=https://api-v2.flowerstore.ph/v2
+API_URL_FS=https://devapi.flowerstore.ph/v2
+API_URL_TH=https://api.potico.co.th/v2
+API_URL_VN=https://api.potico.vn/v2
+GEOCODING_API_KEY=AIzaSyApS6MGUBAAJQu9VtrCLxmYYTtMnTOykcg
+
